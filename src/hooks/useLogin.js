@@ -2,29 +2,25 @@ import { useEffect, useState } from 'react';
 import { LOGIN, useAuth } from '../context/AuthContext';
 import { projectAuth } from '../firebase/config';
 
-export const useSignup = () => {
-  const [isPending, setIsPending] = useState(false);
+export const useLogin = () => {
   const [unMounted, setUnMounted] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
   const { dispatch } = useAuth();
 
-  async function signup(email, password, displayName) {
+  async function login(email, password) {
+    setError(null);
+    setIsPending(true);
+
     try {
-      setIsPending(true);
-      setError(null);
-      const res = await projectAuth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-      if (!res) throw new Error('Could not complete signup');
-      res.user.updateProfile({ displayName });
+      const res = await projectAuth.signInWithEmailAndPassword(email, password);
+      if (!res) throw new Error('Could not login,Try Again!');
       dispatch({ type: LOGIN, payload: res.user });
       if (!unMounted) {
-        setIsPending(false);
         setError(null);
+        setIsPending(false);
       }
     } catch (err) {
-      console.log(err.message);
       if (!unMounted) {
         setError(err.message);
         setIsPending(false);
@@ -36,5 +32,5 @@ export const useSignup = () => {
     return () => setUnMounted(true);
   }, []);
 
-  return { signup, isPending, error };
+  return { error, isPending, login };
 };
