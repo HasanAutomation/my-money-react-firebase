@@ -6,6 +6,7 @@ import { useAuth } from './context/AuthContext';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 import Signup from './pages/signup/Signup';
+import Test from './pages/Test';
 
 function App() {
   const { authIsReady } = useAuth();
@@ -38,6 +39,14 @@ function App() {
             <GuestRoute>
               <Signup />
             </GuestRoute>
+          }
+        />
+        <Route
+          path='/test/:id'
+          element={
+            <PrivateRoute>
+              <Test />
+            </PrivateRoute>
           }
         />
       </Routes>
