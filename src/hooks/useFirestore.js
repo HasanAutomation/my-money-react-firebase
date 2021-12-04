@@ -60,7 +60,14 @@ export const useFirestore = collection => {
   };
 
   // Delete a document
-  const deleteDocument = id => {};
+  const deleteDocument = async id => {
+    try {
+      await ref.doc(id).delete();
+    } catch (err) {
+      console.log(err.message);
+      dispatchIfNotMounted({ type: ERROR, payload: err.message });
+    }
+  };
 
   useEffect(() => {
     return () => setUnMounted(true);
